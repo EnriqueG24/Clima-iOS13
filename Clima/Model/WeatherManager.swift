@@ -7,19 +7,28 @@
 //
 
 import Foundation
+import CoreLocation
 
+// MARK: - Protocol
 protocol WeatherManagerDelegate {
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
     func didFailWithError(error: Error)
 }
 
 struct WeatherManager {
-    let weatherURL = "https://api.openweathermap.org/data/2.5/weather?appid=565ae3a18142c28d33faa41cc7c2ed73&units=imperial"
     
+    // MARK: - Properties
+    let weatherURL = "https://api.openweathermap.org/data/2.5/weather?appid=565ae3a18142c28d33faa41cc7c2ed73&units=imperial"
     var delegate: WeatherManagerDelegate?
     
+    // MARK: - Methods
     func fetchWeather(cityName: String) {
         let urlString = "\(weatherURL)&q=\(cityName)"
+        performRequest(with: urlString)
+    }
+    
+    func fetchWeather(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
+        let urlString = "\(weatherURL)&lat=\(latitude)&lon=\(longitude)"
         performRequest(with: urlString)
     }
     
@@ -64,5 +73,4 @@ struct WeatherManager {
             return nil
         }
     }
-    
 }
