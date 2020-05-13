@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import CoreLocation
 
-class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
-
+class WeatherViewController: UIViewController {
+    
     // MARK: - IBOutlets
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -24,15 +25,20 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     // MARK: - Properties
     var weatherManager = WeatherManager()
+    let locationManager = CLLocationManager()
     
     // MARK: - View LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         searchTextField.delegate = self
         weatherManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
     }
+}
+
+// MARK: - Extension
+extension WeatherViewController: UITextFieldDelegate {
     
-    // MARK: - Methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchTextField.endEditing(true)
         print(searchTextField.text!)
@@ -54,6 +60,9 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
             return false
         }
     }
+}
+
+extension WeatherViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
